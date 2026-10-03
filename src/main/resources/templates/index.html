@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>CampusCare - Grievance Redressal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: { brand: '#4f46e5', brandDark: '#312e81', brandLight: '#818cf8' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); }
+        .hero-bg { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans flex flex-col min-h-screen">
+
+    <!-- Sticky Navigation -->
+    <nav class="glass-nav sticky top-0 z-50 w-full transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-brand text-white rounded-xl flex items-center justify-center shadow-sm">
+                        <i data-lucide="building-2" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">CampusCare</span>
+                </a>
+                
+                <!-- Right CTAs -->
+                <div class="flex items-center gap-4">
+                    <a sec:authorize="isAnonymous()" href="/login" class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-brand text-white font-semibold shadow-sm hover:bg-brandDark transition-colors">
+                        <i data-lucide="user" class="w-4 h-4"></i> Sign In
+                    </a>
+                    
+                    <a sec:authorize="isAuthenticated()" href="/student/dashboard" class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-white border border-slate-200 text-slate-700 font-semibold shadow-sm hover:bg-slate-50 transition-colors">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+                    </a>
+
+                    <a sec:authorize="isAuthenticated()" href="/login?logout" class="flex items-center gap-2 px-6 py-2.5 rounded-lg border border-slate-200 text-slate-700 font-semibold shadow-sm hover:bg-slate-50 transition-colors">
+                        <div class="w-6 h-6 rounded-full bg-brand text-white flex items-center justify-center text-xs" th:text="${#strings.substring(studentName,0,1)}">U</div>
+                        <span th:text="${studentName}">User</span>
+                        <i data-lucide="log-out" class="w-4 h-4 ml-2 text-slate-400"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Clean Hero Section -->
+    <section class="hero-bg py-20 lg:py-32 border-b border-slate-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6">
+                CampusCare <br>
+                <span class="text-brand">Grievance Redressal System</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 font-medium mb-10 max-w-2xl mx-auto">
+                A centralized, transparent platform to quickly submit and track your college and hostel grievances directly with the responsible authorities.
+            </p>
+            <a sec:authorize="isAnonymous()" href="/login" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-brand text-white font-bold text-lg shadow-lg hover:bg-brandDark hover:-translate-y-0.5 transition-all">
+                <i data-lucide="plus" class="w-5 h-5 stroke-[3]"></i> File a Grievance
+            </a>
+            <a sec:authorize="isAuthenticated()" href="/student/file-grievance" class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-brand text-white font-bold text-lg shadow-lg hover:bg-brandDark hover:-translate-y-0.5 transition-all">
+                <i data-lucide="plus" class="w-5 h-5 stroke-[3]"></i> File a Grievance
+            </a>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <section class="py-20 flex-grow">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Category Cards -->
+            <div class="grid md:grid-cols-2 gap-8 mb-16">
+                <!-- College Card -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 hover:shadow-md hover:border-blue-200 transition-all flex flex-col items-start">
+                    <div class="w-14 h-14 bg-blue-50 text-brand rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="graduation-cap" class="w-7 h-7"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">College Grievances</h4>
+                    <p class="text-slate-600 mb-6 flex-grow">
+                        For issues regarding academics, faculty, library, examinations, and college infrastructure. Routed to the Dean & HOD Cell.
+                    </p>
+                    <a sec:authorize="isAnonymous()" href="/login" class="text-brand font-semibold hover:text-brandDark flex items-center gap-1">
+                        Report College Issue <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <a sec:authorize="isAuthenticated()" href="/student/file-grievance?type=COLLEGE" class="text-brand font-semibold hover:text-brandDark flex items-center gap-1">
+                        Report College Issue <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
+                <!-- Hostel Card -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 hover:shadow-md hover:border-amber-200 transition-all flex flex-col items-start">
+                    <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="home" class="w-7 h-7"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-slate-900 mb-3">Hostel Grievances</h4>
+                    <p class="text-slate-600 mb-6 flex-grow">
+                        For issues regarding room maintenance, food hygiene, water/electricity, and Wi-Fi. Routed to the Warden Office.
+                    </p>
+                    <a sec:authorize="isAnonymous()" href="/login" class="text-amber-600 font-semibold hover:text-amber-700 flex items-center gap-1">
+                        Report Hostel Issue <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    <a sec:authorize="isAuthenticated()" href="/student/file-grievance?type=HOSTEL" class="text-amber-600 font-semibold hover:text-amber-700 flex items-center gap-1">
+                        Report Hostel Issue <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Simple Ticket Tracker -->
+            <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center max-w-2xl mx-auto">
+                <div class="w-12 h-12 mx-auto bg-slate-100 rounded-full flex items-center justify-center mb-4 text-slate-600">
+                    <i data-lucide="search" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 mb-2">Track Your Ticket</h3>
+                <p class="text-slate-500 mb-6">Enter your Ticket ID below to check its current status instantly.</p>
+                
+                <form action="/track" method="GET" class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-grow">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i data-lucide="hash" class="w-4 h-4 text-slate-400"></i>
+                        </div>
+                        <input type="text" name="ticketId" placeholder="e.g. CC-1024" class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand focus:border-brand focus:outline-none text-slate-900 placeholder-slate-400" required>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                        Track Status
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Minimal Footer -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+                <div>
+                    <a href="/" class="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                        <i data-lucide="building-2" class="w-5 h-5 text-brand"></i>
+                        <span class="font-bold text-lg text-slate-900">CampusCare</span>
+                    </a>
+                    <p class="text-slate-500 text-sm">
+                        &copy; 2026 CampusCare. All rights reserved.
+                    </p>
+                </div>
+                <div class="flex gap-6 text-sm font-medium text-slate-600">
+                    <span class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 text-slate-400"></i> Emergency: 1091</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

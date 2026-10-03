@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Grievance Submitted - CampusCare</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f4f7fb;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 550px;
+
+            background: white;
+
+            padding: 45px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+        }
+
+        .icon {
+            width: 75px;
+            height: 75px;
+
+            margin: 0 auto 20px;
+
+            background: #dcfce7;
+
+            color: #16a34a;
+
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 40px;
+        }
+
+        h1 {
+            color: #173f8a;
+            margin-bottom: 12px;
+        }
+
+        .message {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .id-box {
+            background: #eff6ff;
+
+            border: 2px dashed #2563eb;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin: 25px 0;
+        }
+
+        .id-label {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .grievance-id {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .warning {
+            color: #92400e;
+            background: #fef3c7;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+
+            padding: 12px 20px;
+
+            border-radius: 8px;
+
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div class="icon">
+            ✓
+        </div>
+
+        <h1>
+            Grievance Submitted!
+        </h1>
+
+        <p class="message">
+            Your grievance has been successfully submitted
+            to the CampusCare system.
+        </p>
+
+        <div class="id-box">
+
+            <div class="id-label">
+                Your Grievance ID
+            </div>
+
+            <div class="grievance-id"
+                 th:text="'#' + ${id}">
+                #1
+            </div>
+
+        </div>
+
+        <div class="warning">
+            ⚠️ Please save this Grievance ID.
+            You will need it to track your grievance.
+        </div>
+
+        <div class="buttons">
+
+            <a href="/track-grievance"
+               class="btn primary">
+                Track Grievance
+            </a>
+
+            <a href="/dashboard"
+               class="btn secondary">
+                Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

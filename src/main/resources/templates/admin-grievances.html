@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin - Grievances | CampusCare</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #243b64;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #123d8d;
+            color: white;
+
+            padding: 20px 50px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 25px;
+        }
+
+        .navbar span {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+            width: 92%;
+            max-width: 1400px;
+            margin: 35px auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            color: #123d8d;
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 7px;
+        }
+
+        /* ================= SEARCH AREA ================= */
+
+        .filter-card {
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+
+            margin-bottom: 25px;
+        }
+
+        .filter-card h3 {
+            color: #123d8d;
+            margin-bottom: 18px;
+            font-size: 18px;
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 280px;
+
+            padding: 12px 15px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #2563eb;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            background: white;
+
+            color: #243b64;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            outline: none;
+
+            min-width: 180px;
+        }
+
+        .filter-select:focus {
+            border-color: #2563eb;
+        }
+
+        .search-btn {
+            padding: 12px 22px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .reset-btn {
+            padding: 12px 22px;
+
+            border-radius: 8px;
+
+            background: #e5e7eb;
+
+            color: #374151;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .reset-btn:hover {
+            background: #d1d5db;
+        }
+
+        /* ================= RESULT INFO ================= */
+
+        .result-info {
+            margin-bottom: 15px;
+
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+        /* ================= TABLE CARD ================= */
+
+        .card {
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1100px;
+        }
+
+        th {
+            background: #123d8d;
+
+            color: white;
+
+            padding: 15px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+        td {
+            padding: 15px;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            color: #444;
+
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: #f8faff;
+        }
+
+        /* ================= DESCRIPTION ================= */
+
+        .description {
+            max-width: 250px;
+
+            line-height: 1.5;
+        }
+
+        /* ================= STATUS SELECT ================= */
+
+        .status-select {
+            padding: 8px 12px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            background: white;
+
+            color: #243b64;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            outline: none;
+        }
+
+        .status-select:focus {
+            border-color: #2563eb;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            text-align: center;
+
+            padding: 50px;
+
+            color: #777;
+
+            font-size: 17px;
+        }
+
+        /* ================= BACK BUTTON ================= */
+
+        .back-btn {
+            display: inline-block;
+
+            margin-top: 25px;
+
+            text-decoration: none;
+
+            color: #2563eb;
+
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                padding: 18px 20px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+
+            .search-btn,
+            .reset-btn {
+                text-align: center;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <h1>
+            CampusCare
+        </h1>
+
+        <span>
+            Admin Dashboard
+        </span>
+
+    </div>
+
+
+    <!-- ================= MAIN CONTAINER ================= -->
+
+    <div class="container">
+
+
+        <!-- ================= HEADER ================= -->
+
+        <div class="header">
+
+            <h2>
+                Grievance Management
+            </h2>
+
+            <p>
+                View, search and manage grievances submitted by students.
+            </p>
+
+        </div>
+
+
+        <!-- ================= SEARCH AND FILTER ================= -->
+
+        <div class="filter-card">
+
+            <h3>
+                Search & Filter Grievances
+            </h3>
+
+
+            <form
+                action="/admin/grievances"
+                method="get"
+                class="filter-form">
+
+
+                <!-- SEARCH -->
+
+                <input
+                    type="text"
+                    name="keyword"
+                    class="search-input"
+                    placeholder="Search by student name, USN or title..."
+                    th:value="${keyword}">
+
+
+                <!-- STATUS FILTER -->
+
+                <select
+                    name="status"
+                    class="filter-select">
+
+                    <option
+                        value="All"
+                        th:selected="${selectedStatus == null or selectedStatus == 'All'}">
+
+                        All Statuses
+
+                    </option>
+
+                    <option
+                        value="Pending"
+                        th:selected="${selectedStatus == 'Pending'}">
+
+                        Pending
+
+                    </option>
+
+                    <option
+                        value="In Progress"
+                        th:selected="${selectedStatus == 'In Progress'}">
+
+                        In Progress
+
+                    </option>
+
+                    <option
+                        value="Resolved"
+                        th:selected="${selectedStatus == 'Resolved'}">
+
+                        Resolved
+
+                    </option>
+
+                </select>
+
+
+                <!-- SEARCH BUTTON -->
+
+                <button
+                    type="submit"
+                    class="search-btn">
+
+                    🔍 Search
+
+                </button>
+
+
+                <!-- RESET -->
+
+                <a
+                    href="/admin/grievances"
+                    class="reset-btn">
+
+                    Reset
+
+                </a>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- ================= RESULT INFO ================= -->
+
+        <div class="result-info">
+
+            <span th:if="${not #lists.isEmpty(grievances)}">
+
+                Showing
+                <strong th:text="${#lists.size(grievances)}">
+                    0
+                </strong>
+
+                grievance(s)
+
+            </span>
+
+            <span th:if="${#lists.isEmpty(grievances)}">
+
+                No matching grievances found.
+
+            </span>
+
+        </div>
+
+
+        <!-- ================= GRIEVANCE TABLE ================= -->
+
+        <div class="card">
+
+
+            <table
+                th:if="${not #lists.isEmpty(grievances)}">
+
+
+                <!-- TABLE HEADER -->
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Student Name
+                        </th>
+
+                        <th>
+                            USN
+                        </th>
+
+                        <th>
+                            Grievance Type
+                        </th>
+
+                        <th>
+                            Category
+                        </th>
+
+                        <th>
+                            Title
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <!-- TABLE BODY -->
+
+                <tbody>
+
+
+                    <tr
+                        th:each="grievance : ${grievances}">
+
+
+                        <!-- ID -->
+
+                        <td
+                            th:text="${grievance.id}">
+
+                            1
+
+                        </td>
+
+
+                        <!-- STUDENT -->
+
+                        <td
+                            th:text="${grievance.studentName}">
+
+                            Student
+
+                        </td>
+
+
+                        <!-- USN -->
+
+                        <td
+                            th:text="${grievance.usn}">
+
+                            USN
+
+                        </td>
+
+
+                        <!-- TYPE -->
+
+                        <td
+                            th:text="${grievance.grievanceType}">
+
+                            General
+
+                        </td>
+
+
+                        <!-- CATEGORY -->
+
+                        <td
+                            th:text="${grievance.category}">
+
+                            Category
+
+                        </td>
+
+
+                        <!-- TITLE -->
+
+                        <td
+                            th:text="${grievance.title}">
+
+                            Title
+
+                        </td>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <td
+                            class="description"
+                            th:text="${grievance.description}">
+
+                            Description
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+
+                            <form
+                                action="/admin/update-status"
+                                method="post">
+
+
+                                <input
+                                    type="hidden"
+                                    name="id"
+                                    th:value="${grievance.id}">
+
+
+                                <select
+                                    name="status"
+                                    class="status-select"
+                                    onchange="this.form.submit()">
+
+
+                                    <option
+                                        value="Pending"
+                                        th:selected="${grievance.status == 'Pending'}">
+
+                                        Pending
+
+                                    </option>
+
+
+                                    <option
+                                        value="In Progress"
+                                        th:selected="${grievance.status == 'In Progress'}">
+
+                                        In Progress
+
+                                    </option>
+
+
+                                    <option
+                                        value="Resolved"
+                                        th:selected="${grievance.status == 'Resolved'}">
+
+                                        Resolved
+
+                                    </option>
+
+
+                                </select>
+
+
+                            </form>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+
+            <!-- ================= EMPTY MESSAGE ================= -->
+
+            <div
+                class="empty"
+                th:if="${#lists.isEmpty(grievances)}">
+
+                <p>
+                    No grievances match your search or filter.
+                </p>
+
+                <br>
+
+                <a
+                    href="/admin/grievances"
+                    class="reset-btn">
+
+                    View All Grievances
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= BACK ================= -->
+
+        <a
+            href="/admin/dashboard"
+            class="back-btn">
+
+            ← Back to Admin Dashboard
+
+        </a>
+
+
+    </div>
+
+
+</body>
+
+</html>

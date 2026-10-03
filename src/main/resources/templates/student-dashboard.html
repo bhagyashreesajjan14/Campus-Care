@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - CampusCare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: { brand: '#2563eb', brandDark: '#1e3a8a', surface: '#f8fafc' }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8fafc; }
+        .glass-nav { background: rgba(30, 58, 138, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .premium-card { background: white; border-radius: 1rem; border: 1px solid rgba(226, 232, 240, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; }
+        .premium-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .btn-primary-gradient { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="glass-nav fixed w-full z-50 top-0 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <a href="/" class="flex items-center gap-3 text-white decoration-transparent">
+                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white border border-white/20">
+                        <i data-lucide="building-2" class="w-6 h-6"></i>
+                    </div>
+                    <span class="font-extrabold text-2xl tracking-tight text-white">CampusCare</span>
+                </a>
+                
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex items-center gap-3 bg-white/10 py-1.5 px-2 rounded-full border border-white/20">
+                        <div class="h-9 w-9 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-500 text-white flex items-center justify-center font-bold shadow-inner">
+                            <span th:text="${#strings.substring(studentName, 0, 1)}">S</span>
+                        </div>
+                        <div class="pr-3 text-left">
+                            <div class="text-sm font-bold text-white leading-tight" th:text="${studentName}">User</div>
+                            <div class="text-xs font-medium text-blue-200" th:text="${#authentication.name}">USN</div>
+                        </div>
+                    </div>
+                    <a href="/" class="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2">
+                        <i data-lucide="home" class="w-4 h-4"></i> <span class="hidden sm:inline">Home</span>
+                    </a>
+                    <a href="/login?logout" class="bg-red-500/20 hover:bg-red-500/40 text-red-100 border border-red-500/30 px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> <span class="hidden sm:inline">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex-grow pt-28 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Header & Action -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-6">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-brandDark tracking-tight mb-2">My Ticket Dashboard</h1>
+                    <p class="text-slate-500 font-medium text-lg">Track all your submitted grievances in one place.</p>
+                </div>
+                
+                <a href="/student/file-grievance" class="btn-primary-gradient text-white px-7 py-3.5 rounded-2xl font-bold flex items-center gap-2 text-lg shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 transition-all">
+                    <i data-lucide="plus" class="w-5 h-5 stroke-[3]"></i> File New Grievance
+                </a>
+            </div>
+
+            <!-- Alerts -->
+            <div th:if="${param.success}" class="bg-emerald-50 text-emerald-800 p-4 rounded-2xl mb-8 flex items-center gap-3 border border-emerald-200">
+                <i data-lucide="check-circle-2" class="text-emerald-600"></i><span class="font-bold">Grievance successfully submitted!</span>
+            </div>
+                
+            <!-- Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="premium-card p-6 border-l-4 border-l-slate-400">
+                    <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Total Submitted</p>
+                    <h3 class="text-4xl font-black text-brandDark" th:text="${totalCount}">0</h3>
+                </div>
+                <div class="premium-card p-6 border-l-4 border-l-amber-400">
+                    <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Pending (New)</p>
+                    <h3 class="text-4xl font-black text-amber-600" th:text="${pendingCount}">0</h3>
+                </div>
+                <div class="premium-card p-6 border-l-4 border-l-blue-400">
+                    <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">In Progress</p>
+                    <h3 class="text-4xl font-black text-blue-600" th:text="${inProgressCount}">0</h3>
+                </div>
+                <div class="premium-card p-6 border-l-4 border-l-emerald-400">
+                    <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">Resolved</p>
+                    <h3 class="text-4xl font-black text-emerald-600" th:text="${resolvedCount}">0</h3>
+                </div>
+            </div>
+
+            <!-- Unified Ticket Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h2 class="text-xl font-extrabold text-slate-900">Recent Tickets</h2>
+                </div>
+                
+                <div th:if="${#lists.isEmpty(myTickets)}" class="p-16 text-center">
+                    <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i data-lucide="inbox" class="w-10 h-10 text-slate-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-700 mb-2">No tickets found</h3>
+                    <p class="text-slate-500">You haven't submitted any grievances yet.</p>
+                </div>
+
+                <div class="overflow-x-auto" th:unless="${#lists.isEmpty(myTickets)}">
+                    <table class="w-full text-left text-sm whitespace-nowrap">
+                        <thead class="bg-slate-50 text-slate-500 font-bold uppercase text-xs">
+                            <tr>
+                                <th class="px-6 py-4">Ticket ID</th>
+                                <th class="px-6 py-4">Type / Category</th>
+                                <th class="px-6 py-4">Submitted Date</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr th:each="t : ${myTickets}" class="hover:bg-slate-50 transition">
+                                <td class="px-6 py-4">
+                                    <span class="font-black text-slate-900">#CC-[[${t.id}]]</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-800 mb-1">
+                                        <span th:if="${t.grievanceType != null and t.grievanceType.name() == 'HOSTEL'}" class="text-amber-600 border border-amber-200 bg-amber-50 px-2 py-0.5 rounded text-xs mr-1">HOSTEL</span>
+                                        <span th:if="${t.grievanceType != null and t.grievanceType.name() == 'COLLEGE'}" class="text-blue-600 border border-blue-200 bg-blue-50 px-2 py-0.5 rounded text-xs mr-1">COLLEGE</span>
+                                        <span th:text="${t.title}">Title</span>
+                                    </div>
+                                    <div class="text-xs text-slate-500 w-64 truncate" th:text="${t.category}">Category</div>
+                                </td>
+                                <td class="px-6 py-4 text-slate-600 font-medium" th:text="${#temporals.format(t.createdAt, 'dd MMM yyyy, HH:mm')}">Date</td>
+                                <td class="px-6 py-4">
+                                    <span th:if="${t.status != null and t.status.name() == 'PENDING'}" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700">PENDING</span>
+                                    <span th:if="${t.status != null and (t.status.name() == 'IN_PROGRESS' || t.status.name() == 'ASSIGNED' || t.status.name() == 'ESCALATED')}" class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">IN PROGRESS</span>
+                                    <span th:if="${t.status != null and t.status.name() == 'AWAITING_VERIFICATION'}" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-50 text-purple-700">ACTION REQUIRED</span>
+                                    <span th:if="${t.status != null and t.status.name() == 'RESOLVED'}" class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700">RESOLVED</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a th:href="@{/track(ticketId='CC-' + ${t.id})}" class="text-brand font-bold hover:text-brandDark flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors inline-flex">
+                                        Track <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

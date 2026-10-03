@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Submit Grievance - CampusCare</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+
+        /* =========================
+           NAVBAR
+           ========================= */
+
+        .navbar {
+            background: #173f8a;
+            color: white;
+            padding: 20px 45px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+
+        .back {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           CONTAINER
+           ========================= */
+
+        .container {
+            width: 90%;
+            max-width: 750px;
+            margin: 40px auto;
+        }
+
+
+        /* =========================
+           FORM CARD
+           ========================= */
+
+        .form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+
+        /* =========================
+           HEADING
+           ========================= */
+
+        .heading {
+            margin-bottom: 30px;
+        }
+
+
+        .heading h1 {
+            color: #173f8a;
+            margin-bottom: 8px;
+        }
+
+
+        .heading p {
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           FORM GROUP
+           ========================= */
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+
+        .required {
+            color: #dc2626;
+        }
+
+
+        /* =========================
+           INPUTS
+           ========================= */
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+
+            font-size: 15px;
+            background: white;
+        }
+
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
+        }
+
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           VALIDATION ERROR
+           ========================= */
+
+        .error-message {
+            color: #dc2626;
+            font-size: 13px;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+
+        /* =========================
+           FIELD HINT
+           ========================= */
+
+        .field-hint {
+            display: block;
+            margin-top: 6px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           SUBMIT BUTTON
+           ========================= */
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+
+            background: #2563eb;
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: background 0.2s ease,
+                        transform 0.1s ease;
+        }
+
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+
+        .submit-btn:active {
+            transform: scale(0.99);
+        }
+
+
+        /* =========================
+           INFORMATION BOX
+           ========================= */
+
+        .info-box {
+            margin-top: 20px;
+            padding: 14px 16px;
+
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+
+            border-radius: 6px;
+
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+           ========================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 18px 22px;
+            }
+
+
+            .logo {
+                font-size: 22px;
+            }
+
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+
+            .form-card {
+                padding: 24px;
+            }
+
+
+            .heading h1 {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+     ========================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        CampusCare
+    </div>
+
+
+    <a
+        th:href="@{/dashboard}"
+        class="back">
+
+        ← Dashboard
+
+    </a>
+
+</div>
+
+
+
+<!-- =========================
+     FORM CONTAINER
+     ========================= -->
+
+<div class="container">
+
+
+    <div class="form-card">
+
+
+        <!-- =========================
+             HEADING
+             ========================= -->
+
+        <div class="heading">
+
+            <h1>
+                Submit a Grievance
+            </h1>
+
+            <p>
+                Report a problem related to your college,
+                hostel, infrastructure, administration,
+                or other campus services.
+            </p>
+
+        </div>
+
+
+
+        <!-- =========================
+             GRIEVANCE FORM
+             ========================= -->
+
+        <form
+            th:action="@{/grievance}"
+            th:object="${grievance}"
+            method="post">
+
+
+
+            <!-- =========================
+                 GRIEVANCE TYPE
+                 ========================= -->
+
+            <div class="form-group">
+
+                <label for="grievanceType">
+
+                    Grievance Type
+
+                    <span class="required">
+                        *
+                    </span>
+
+                </label>
+
+
+                <select
+                    id="grievanceType"
+                    th:field="*{grievanceType}"
+                    required>
+
+                    <option value="">
+                        Select grievance type
+                    </option>
+
+
+                    <option value="Academic">
+                        🎓 Academic
+                    </option>
+
+
+                    <option value="Hostel">
+                        🏠 Hostel & Accommodation
+                    </option>
+
+
+                    <option value="Infrastructure">
+                        🏢 Infrastructure & Facilities
+                    </option>
+
+
+                    <option value="Administration">
+                        📋 Administration
+                    </option>
+
+
+                    <option value="Transport">
+                        🚌 Transport
+                    </option>
+
+
+                    <option value="Other">
+                        📌 Other
+                    </option>
+
+                </select>
+
+
+                <div
+                    class="error-message"
+                    th:if="${#fields.hasErrors('grievanceType')}"
+                    th:errors="*{grievanceType}">
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 CATEGORY
+                 ========================= -->
+
+            <div class="form-group">
+
+                <label for="category">
+
+                    Specific Category
+
+                    <span class="required">
+                        *
+                    </span>
+
+                </label>
+
+
+                <select
+                    id="category"
+                    th:field="*{category}"
+                    required>
+
+                    <option value="">
+                        Select grievance type first
+                    </option>
+
+                </select>
+
+
+                <span class="field-hint">
+                    Select a grievance type first to see
+                    the relevant categories.
+                </span>
+
+
+                <div
+                    class="error-message"
+                    th:if="${#fields.hasErrors('category')}"
+                    th:errors="*{category}">
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 TITLE
+                 ========================= -->
+
+            <div class="form-group">
+
+                <label for="title">
+
+                    Grievance Title
+
+                    <span class="required">
+                        *
+                    </span>
+
+                </label>
+
+
+                <input
+                    type="text"
+                    id="title"
+                    th:field="*{title}"
+                    placeholder="Example: Water leakage in hostel bathroom"
+                    minlength="5"
+                    maxlength="150"
+                    required>
+
+
+                <span class="field-hint">
+                    Enter a short and clear title.
+                    Maximum 150 characters.
+                </span>
+
+
+                <div
+                    class="error-message"
+                    th:if="${#fields.hasErrors('title')}"
+                    th:errors="*{title}">
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 DESCRIPTION
+                 ========================= -->
+
+            <div class="form-group">
+
+                <label for="description">
+
+                    Description
+
+                    <span class="required">
+                        *
+                    </span>
+
+                </label>
+
+
+                <textarea
+                    id="description"
+                    th:field="*{description}"
+                    placeholder="Describe your problem in detail..."
+                    minlength="10"
+                    maxlength="2000"
+                    required></textarea>
+
+
+                <span class="field-hint">
+                    Please provide enough information
+                    for the administration to understand
+                    and investigate the issue.
+                </span>
+
+
+                <div
+                    class="error-message"
+                    th:if="${#fields.hasErrors('description')}"
+                    th:errors="*{description}">
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 SUBMIT BUTTON
+                 ========================= -->
+
+            <button
+                type="submit"
+                class="submit-btn">
+
+                Submit Grievance
+
+            </button>
+
+
+
+            <!-- =========================
+                 INFORMATION
+                 ========================= -->
+
+            <div class="info-box">
+
+                <strong>Note:</strong>
+
+                Please provide accurate information.
+                After submission, your grievance will
+                initially be marked as
+                <strong>Pending</strong>.
+
+                You can track its progress from
+                the Track Grievance section.
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================
+     DYNAMIC CATEGORY SCRIPT
+     ========================= -->
+
+<script>
+
+    /*
+     * Categories are grouped according to
+     * the selected grievance type.
+     */
+
+    const categoryOptions = {
+
+        Academic: [
+            "Faculty / Teaching",
+            "Examination",
+            "Internal Assessment",
+            "Attendance",
+            "Academic Resources"
+        ],
+
+
+        Hostel: [
+            "Cleanliness",
+            "Water Supply",
+            "Electricity",
+            "Food / Mess",
+            "Room / Maintenance",
+            "Hostel Security"
+        ],
+
+
+        Infrastructure: [
+            "Classroom",
+            "Laboratory",
+            "Library",
+            "Internet / Wi-Fi",
+            "Campus Facilities",
+            "Maintenance"
+        ],
+
+
+        Administration: [
+            "Fees",
+            "Documents",
+            "Scholarship",
+            "General Administration",
+            "Student Services"
+        ],
+
+
+        Transport: [
+            "Bus",
+            "Route",
+            "Timing",
+            "Transport Facilities",
+            "Safety"
+        ],
+
+
+        Other: [
+            "Other"
+        ]
+
+    };
+
+
+
+    /*
+     * Get the two dropdown elements.
+     */
+
+    const grievanceType =
+        document.getElementById("grievanceType");
+
+
+    const category =
+        document.getElementById("category");
+
+
+
+    /*
+     * This function updates the Category
+     * dropdown based on Grievance Type.
+     */
+
+    function updateCategories(selectedCategory) {
+
+        const selectedType =
+            grievanceType.value;
+
+
+        /*
+         * Clear existing options.
+         */
+
+        category.innerHTML = "";
+
+
+        /*
+         * If no grievance type is selected.
+         */
+
+        if (!selectedType ||
+            !categoryOptions[selectedType]) {
+
+            const defaultOption =
+                document.createElement("option");
+
+            defaultOption.value = "";
+
+            defaultOption.textContent =
+                "Select grievance type first";
+
+            category.appendChild(defaultOption);
+
+            return;
+        }
+
+
+        /*
+         * Add default option.
+         */
+
+        const defaultOption =
+            document.createElement("option");
+
+        defaultOption.value = "";
+
+        defaultOption.textContent =
+            "Select category";
+
+        category.appendChild(defaultOption);
+
+
+
+        /*
+         * Add categories for the
+         * selected grievance type.
+         */
+
+        categoryOptions[selectedType]
+            .forEach(function (item) {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = item;
+
+                option.textContent = item;
+
+
+                /*
+                 * When validation fails and the
+                 * form is returned, restore the
+                 * previously selected category.
+                 */
+
+                if (item === selectedCategory) {
+                    option.selected = true;
+                }
+
+
+                category.appendChild(option);
+
+            });
+
+    }
+
+
+
+    /*
+     * Update category whenever the user
+     * changes the grievance type.
+     */
+
+    grievanceType.addEventListener(
+        "change",
+        function () {
+
+            updateCategories("");
+
+        }
+    );
+
+
+
+    /*
+     * Restore categories when the page
+     * loads after a validation error.
+     */
+
+    const existingCategory =
+        category.value;
+
+
+    updateCategories(existingCategory);
+
+</script>
+
+
+</body>
+
+</html>

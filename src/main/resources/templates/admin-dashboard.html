@@ -1,0 +1,623 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - CampusCare</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #173f8a;
+            color: white;
+            padding: 20px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .navbar span {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* ================= MAIN CONTAINER ================= */
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+            color: #173f8a;
+        }
+
+        .welcome p {
+            color: #6b7280;
+        }
+
+        /* ================= STATISTICS CARDS ================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+            border-left: 5px solid #2563eb;
+        }
+
+        .card h3 {
+            color: #6b7280;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+
+        .number {
+            font-size: 35px;
+            font-weight: bold;
+            color: #173f8a;
+        }
+
+        /* Pending */
+
+        .pending {
+            border-left-color: #f59e0b;
+        }
+
+        .pending .number {
+            color: #d97706;
+        }
+
+        /* In Progress */
+
+        .progress {
+            border-left-color: #3b82f6;
+        }
+
+        .progress .number {
+            color: #2563eb;
+        }
+
+        /* Resolved */
+
+        .resolved {
+            border-left-color: #22c55e;
+        }
+
+        .resolved .number {
+            color: #16a34a;
+        }
+
+        /* ================= QUICK ACTIONS ================= */
+
+        .actions {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+            margin-bottom: 35px;
+        }
+
+        .actions h3 {
+            color: #173f8a;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 13px 22px;
+            border-radius: 8px;
+
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* ================= RECENT GRIEVANCES ================= */
+
+        .recent-section {
+            margin-top: 35px;
+        }
+
+        .recent-section h2 {
+            color: #173f8a;
+            margin-bottom: 18px;
+            font-size: 22px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 14px;
+            padding: 20px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #173f8a;
+            color: white;
+
+            padding: 13px;
+            text-align: left;
+        }
+
+        td {
+            padding: 13px;
+
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-progress {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .status-resolved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 18px 20px;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            th,
+            td {
+                font-size: 13px;
+                padding: 10px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <h1>
+            CampusCare
+        </h1>
+
+        <span>
+
+            Welcome,
+
+            <strong th:text="${#authentication.name}">
+                Admin
+            </strong>
+
+        </span>
+
+    </div>
+
+
+    <!-- ================= MAIN CONTAINER ================= -->
+
+    <div class="container">
+
+
+        <!-- ================= WELCOME ================= -->
+
+        <div class="welcome">
+
+            <h2>
+                Admin Dashboard
+            </h2>
+
+            <p>
+                Monitor and manage student grievances.
+            </p>
+
+        </div>
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <div class="cards">
+
+
+            <!-- TOTAL -->
+
+            <div class="card">
+
+                <h3>
+                    Total Grievances
+                </h3>
+
+                <div class="number"
+                     th:text="${total}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- PENDING -->
+
+            <div class="card pending">
+
+                <h3>
+                    Pending
+                </h3>
+
+                <div class="number"
+                     th:text="${pending}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- IN PROGRESS -->
+
+            <div class="card progress">
+
+                <h3>
+                    In Progress
+                </h3>
+
+                <div class="number"
+                     th:text="${inProgress}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+            <!-- RESOLVED -->
+
+            <div class="card resolved">
+
+                <h3>
+                    Resolved
+                </h3>
+
+                <div class="number"
+                     th:text="${resolved}">
+
+                    0
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= QUICK ACTIONS ================= -->
+
+        <div class="actions">
+
+            <h3>
+                Quick Actions
+            </h3>
+
+
+            <div class="buttons">
+
+
+                <a href="/admin/grievances"
+                   class="btn btn-primary">
+
+                    View All Grievances
+
+                </a>
+
+
+                <a href="/"
+                   class="btn btn-secondary">
+
+                    Back to Home
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RECENT GRIEVANCES ================= -->
+
+        <div class="recent-section">
+
+
+            <h2>
+                Recent Grievances
+            </h2>
+
+
+            <div class="table-container">
+
+
+                <table>
+
+
+                    <!-- TABLE HEADER -->
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Student
+                            </th>
+
+                            <th>
+                                Title
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- TABLE BODY -->
+
+                    <tbody>
+
+
+                        <tr th:each="grievance : ${recentGrievances}">
+
+
+                            <td th:text="${grievance.id}">
+
+                                1
+
+                            </td>
+
+
+                            <td th:text="${grievance.studentName}">
+
+                                Student
+
+                            </td>
+
+
+                            <td th:text="${grievance.title}">
+
+                                Room Cleaning
+
+                            </td>
+
+
+                            <td th:text="${grievance.category}">
+
+                                Hostel
+
+                            </td>
+
+
+                            <td>
+
+
+                                <!-- PENDING -->
+
+                                <span
+                                    class="status status-pending"
+                                    th:if="${grievance.status == 'Pending'}"
+                                    th:text="${grievance.status}">
+
+                                    Pending
+
+                                </span>
+
+
+                                <!-- IN PROGRESS -->
+
+                                <span
+                                    class="status status-progress"
+                                    th:if="${grievance.status == 'In Progress'}"
+                                    th:text="${grievance.status}">
+
+                                    In Progress
+
+                                </span>
+
+
+                                <!-- RESOLVED -->
+
+                                <span
+                                    class="status status-resolved"
+                                    th:if="${grievance.status == 'Resolved'}"
+                                    th:text="${grievance.status}">
+
+                                    Resolved
+
+                                </span>
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</body>
+
+</html>
+```
+
+### ✅ What you need to do
+
+1. Open `admin-dashboard.html`.
+2. **Delete everything** currently inside it.
+3. Paste the complete code above.
+4. Save `Ctrl + S`.
+5. Run:
+
+```powershell
+.\mvnw.cmd clean compile
+```
+
+6. If you get:
+
+```text
+BUILD SUCCESS
+```
+
+run:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+7. Login as **admin** and open the dashboard.
+
+You should now see the **4 live statistics + Quick Actions + Recent Grievances**.
+
+**Don't change `AdminDashboardController`, `GrievanceService`, or `GrievanceRepository` again if you already added the methods from the previous step.**
