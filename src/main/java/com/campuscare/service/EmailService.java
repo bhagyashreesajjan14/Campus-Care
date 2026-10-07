@@ -67,7 +67,7 @@ public class EmailService {
             }
             
             body.append("\n----- STUDENT DETAILS -----\n");
-            if (grievance.isAnonymous()) {
+            if (grievance.getAnonymous()) {
                 body.append("Student Name: [HIDDEN FOR ANONYMITY]\n");
                 body.append("Phone No: [HIDDEN FOR ANONYMITY]\n");
             } else {

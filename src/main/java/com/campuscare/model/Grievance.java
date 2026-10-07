@@ -90,7 +90,7 @@ public class Grievance {
     public void setRoomNo(String roomNo) { this.roomNo = roomNo; }
     public String getSubmittedBy() { return submittedBy; }
     public void setSubmittedBy(String submittedBy) { this.submittedBy = submittedBy; }
-    public Boolean isAnonymous() { return anonymous != null ? anonymous : false; }
+    public Boolean getAnonymous() { return anonymous != null ? anonymous : false; }
     public void setAnonymous(Boolean anonymous) { this.anonymous = anonymous; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
