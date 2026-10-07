@@ -94,6 +94,9 @@
                         <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i> Resolution Details
                     </h4>
                     <p class="text-emerald-800 text-sm leading-relaxed font-medium" th:text="${ticket.actionTakenRemarks}"></p>
+                    <p class="text-emerald-700 text-xs mt-3 flex items-center gap-1 font-semibold">
+                        <i data-lucide="clock" class="w-4 h-4"></i> Time Taken: <span th:text="${ticket.resolutionTimeFormatted}"></span>
+                    </p>
                 </div>
 
             </div>

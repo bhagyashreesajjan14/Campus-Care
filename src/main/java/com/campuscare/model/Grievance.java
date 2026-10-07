@@ -71,6 +71,8 @@ public class Grievance {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    private LocalDateTime resolvedAt;
+
     public Grievance() {
     }
 
@@ -126,6 +128,22 @@ public class Grievance {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getResolvedAt() { return resolvedAt; }
+    public void setResolvedAt(LocalDateTime resolvedAt) { this.resolvedAt = resolvedAt; }
+
+    public String getResolutionTimeFormatted() {
+        if (createdAt == null || resolvedAt == null) return "N/A";
+        java.time.Duration duration = java.time.Duration.between(createdAt, resolvedAt);
+        long days = duration.toDays();
+        long hours = duration.toHoursPart();
+        long minutes = duration.toMinutesPart();
+        
+        StringBuilder sb = new StringBuilder();
+        if (days > 0) sb.append(days).append(" days, ");
+        if (hours > 0 || days > 0) sb.append(hours).append(" hours, ");
+        sb.append(minutes).append(" mins");
+        return sb.toString();
+    }
 
     public boolean isOverdue() {
         if (slaDeadline == null || status == GrievanceStatus.RESOLVED || status == GrievanceStatus.AWAITING_VERIFICATION) {

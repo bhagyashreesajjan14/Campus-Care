@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/dept-admin/**").hasRole("DEPT_ADMIN")
 
                 // Super Admin pages
-                .requestMatchers("/admin/**", "/super-admin/**").hasRole("SUPER_ADMIN")
+                .requestMatchers("/admin/**", "/super-admin/**").hasAnyRole("SUPER_ADMIN", "DEPT_ADMIN")
 
                 // Everything else
                 .anyRequest().authenticated()
@@ -52,7 +52,7 @@ public class SecurityConfig {
 
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/dashboard", true)
                 .permitAll()
             )
 

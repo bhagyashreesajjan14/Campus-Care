@@ -119,6 +119,10 @@ public class GrievanceService {
         Grievance savedGrievance = grievanceRepository.save(grievance);
         
         if (savedGrievance.getStatus() == GrievanceStatus.RESOLVED) {
+            if (savedGrievance.getResolvedAt() == null) {
+                savedGrievance.setResolvedAt(LocalDateTime.now());
+                savedGrievance = grievanceRepository.save(savedGrievance);
+            }
             emailService.sendResolutionNotification(savedGrievance.getEmail(), savedGrievance.getId(), savedGrievance.getTitle(), actionRemarks);
         }
         return savedGrievance;

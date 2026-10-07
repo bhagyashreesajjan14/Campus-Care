@@ -10,6 +10,13 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String dashboardRedirect(Authentication authentication) {
+        String username = authentication.getName();
+        if ("hosteladmin".equals(username)) {
+            return "redirect:/admin/hostel/dashboard";
+        } else if ("collegeadmin".equals(username)) {
+            return "redirect:/admin/college/dashboard";
+        }
+        
         for (GrantedAuthority auth : authentication.getAuthorities()) {
             if (auth.getAuthority().equals("ROLE_STUDENT")) {
                 return "redirect:/student/dashboard";

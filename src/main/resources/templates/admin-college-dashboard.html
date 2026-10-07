@@ -102,7 +102,7 @@
                                       th:text="${t.status}">Status</span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <button @click="activeTicketId = [[${t.id}]]; showModal = true" class="text-indigo-600 hover:text-indigo-900 font-bold text-sm bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition">Update Status</button>
+                                <button th:data-id="${t.id}" @click="activeTicketId = $el.dataset.id; showModal = true" class="text-indigo-600 hover:text-indigo-900 font-bold text-sm bg-indigo-50 hover:bg-indigo-100 px-4 py-2 rounded-lg transition">Update Status</button>
                             </td>
                         </tr>
                     </tbody>
