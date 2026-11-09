@@ -23,16 +23,20 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                // Public pages
+                // Public pages and assets
                 .requestMatchers(
                     "/",
                     "/login",
                     "/signup",
                     "/register",
+                    "/track",
                     "/css/**",
                     "/js/**",
                     "/images/**"
                 ).permitAll()
+
+                // Authenticated file attachments
+                .requestMatchers("/attachments/**", "/files/**").authenticated()
 
                 // Dashboard routing
                 .requestMatchers("/dashboard").authenticated()

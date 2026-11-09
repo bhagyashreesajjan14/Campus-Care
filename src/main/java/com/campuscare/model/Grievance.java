@@ -1,5 +1,6 @@
 package com.campuscare.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,8 +9,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table(name = "grievances")
 @EntityListeners(AuditingEntityListener.class)
 public class Grievance {
 
@@ -63,6 +67,16 @@ public class Grievance {
     
     @Column(length = 2000)
     private String actionTakenRemarks;
+
+    @Column(name = "is_escalated", nullable = false)
+    private boolean isEscalated = false;
+
+    @Column(name = "escalated_at")
+    private LocalDateTime escalatedAt;
+
+    @OneToMany(mappedBy = "grievance", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Attachment> attachments = new ArrayList<>();
 
     @CreatedDate
     @Column(updatable = false)
@@ -130,6 +144,44 @@ public class Grievance {
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     public LocalDateTime getResolvedAt() { return resolvedAt; }
     public void setResolvedAt(LocalDateTime resolvedAt) { this.resolvedAt = resolvedAt; }
+
+    public boolean isEscalated() { return isEscalated; }
+    public void setEscalated(boolean isEscalated) { this.isEscalated = isEscalated; }
+    public boolean getIsEscalated() { return isEscalated; }
+    public void setIsEscalated(boolean isEscalated) { this.isEscalated = isEscalated; }
+
+    public LocalDateTime getEscalatedAt() { return escalatedAt; }
+    public void setEscalatedAt(LocalDateTime escalatedAt) { this.escalatedAt = escalatedAt; }
+
+    public List<Attachment> getAttachments() {
+        return attachments != null ? attachments : new ArrayList<>();
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public void addAttachment(Attachment attachment) {
+        if (this.attachments == null) {
+            this.attachments = new ArrayList<>();
+        }
+        this.attachments.add(attachment);
+        attachment.setGrievance(this);
+    }
+
+    public List<Attachment> getStudentEvidenceAttachments() {
+        if (attachments == null) return List.of();
+        return attachments.stream()
+                .filter(a -> a.getUploadType() == UploadType.STUDENT_EVIDENCE)
+                .toList();
+    }
+
+    public List<Attachment> getResolverProofAttachments() {
+        if (attachments == null) return List.of();
+        return attachments.stream()
+                .filter(a -> a.getUploadType() == UploadType.RESOLVER_PROOF)
+                .toList();
+    }
 
     public String getResolutionTimeFormatted() {
         if (createdAt == null || resolvedAt == null) return "N/A";

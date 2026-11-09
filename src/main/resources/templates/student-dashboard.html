@@ -139,6 +139,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-slate-600 font-medium" th:text="${#temporals.format(t.createdAt, 'dd MMM yyyy, HH:mm')}">Date</td>
                                 <td class="px-6 py-4">
+                                    <span th:if="${t.isEscalated()}" class="px-2 py-0.5 rounded text-[11px] font-black bg-rose-600 text-white mr-1">ESCALATED</span>
                                     <span th:if="${t.status != null and t.status.name() == 'PENDING'}" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700">PENDING</span>
                                     <span th:if="${t.status != null and (t.status.name() == 'IN_PROGRESS' || t.status.name() == 'ASSIGNED' || t.status.name() == 'ESCALATED')}" class="px-3 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-700">IN PROGRESS</span>
                                     <span th:if="${t.status != null and t.status.name() == 'AWAITING_VERIFICATION'}" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-50 text-purple-700">ACTION REQUIRED</span>

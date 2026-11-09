@@ -1,52 +1,264 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Super Admin Dashboard - CampusCare</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f4f7fb; padding: 20px; }
-        .card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fb;
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .escalated-row {
+            background-color: #fff1f2 !important;
+            border-left: 4px solid #e11d48 !important;
+        }
+
+        .attachment-thumb {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+        }
     </style>
 </head>
+
 <body>
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Institution Overview (Super Admin)</h2>
-        <a href="/login?logout" class="btn btn-outline-danger">Logout</a>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2>Institution Overview (Super Admin)</h2>
+                <p class="text-muted mb-0">High-level institutional SLA metrics, root causes, and ticket oversight</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="/dept-admin/dashboard" class="btn btn-outline-secondary btn-sm">Dept View</a>
+                <a href="/login?logout" class="btn btn-outline-danger btn-sm">Logout</a>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card p-3 h-100">
+                    <h5 class="text-center mb-3">Ticket Distribution by Dept</h5>
+                    <div style="position: relative; height: 320px; max-width: 380px; margin: 0 auto; width: 100%;">
+                        <canvas id="deptDonutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card p-3 h-100">
+                    <h5 class="text-center mb-3">SLA Compliance by Dept</h5>
+                    <div style="position: relative; height: 320px; width: 100%;">
+                        <canvas id="slaBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card p-3 text-center bg-primary text-white">
+                    <h6>Average MTTR</h6>
+                    <h2 id="mttrValue">-- hrs</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <h4 class="mb-0">All Institution Grievances</h4>
+                    <!-- Quick Filter Buttons -->
+                    <div class="btn-group" role="group" aria-label="Ticket Filter">
+                        <button type="button" class="btn btn-sm btn-outline-primary active" id="filterAllBtn" onclick="applySuperFilter('all')">
+                            All Tickets (<span th:text="${#lists.size(grievances)}">0</span>)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" id="filterEscalatedBtn" onclick="applySuperFilter('escalated')">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Escalated Only 
+                            (<span th:text="${#lists.size(grievances.?[isEscalated])}">0</span>)
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <input type="text" id="superSearchInput" onkeyup="searchSuperTable()" class="form-control form-control-sm" placeholder="Filter grievances...">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover mt-2 align-middle" id="superGrievanceTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Dept</th>
+                            <th>Title</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Student</th>
+                            <th>Attachments</th>
+                            <th>SLA Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="g : ${grievances}" 
+                            th:attr="data-escalated=${g.isEscalated()}"
+                            th:classappend="${g.isEscalated()} ? 'escalated-row' : ''">
+                            <td>
+                                <strong class="text-dark">#CC-<span th:text="${g.id}"></span></strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary" th:text="${g.assignedDepartment != null ? g.assignedDepartment : g.department}"></span>
+                            </td>
+                            <td>
+                                <strong th:text="${g.title}"></strong>
+                                <span th:if="${g.isEscalated()}" class="badge bg-danger ms-1">Escalated</span>
+                            </td>
+                            <td>
+                                <span th:if="${g.priority != null and g.priority.name() == 'CRITICAL'}" class="badge bg-danger" th:text="${g.priority}"></span>
+                                <span th:if="${g.priority != null and g.priority.name() == 'HIGH'}" class="badge bg-warning text-dark" th:text="${g.priority}"></span>
+                                <span th:if="${g.priority != null and g.priority.name() == 'MEDIUM'}" class="badge bg-primary" th:text="${g.priority}"></span>
+                                <span th:if="${g.priority != null and g.priority.name() == 'LOW'}" class="badge bg-secondary" th:text="${g.priority}"></span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary" th:text="${g.status}"></span>
+                            </td>
+                            <td th:text="${g.submittedBy}"></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <div th:each="att : ${g.attachments}">
+                                        <a th:href="@{/attachments/{id}(id=${att.id})}" target="_blank" th:title="${att.originalFileName + ' (' + att.uploadType + ')'}">
+                                            <img th:if="${att.isImage()}" th:src="@{/attachments/{id}(id=${att.id})}" class="attachment-thumb" alt="Preview">
+                                            <span th:if="${att.isPdf()}" class="badge bg-light text-danger border p-1 small">
+                                                <i class="bi bi-file-earmark-pdf"></i>
+                                            </span>
+                                            <span th:if="${!att.isImage() && !att.isPdf()}" class="badge bg-light text-secondary border p-1 small">
+                                                <i class="bi bi-paperclip"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <span th:if="${#lists.isEmpty(g.attachments)}" class="text-muted small">None</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span th:if="${g.isEscalated()}" class="badge bg-danger">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> ESCALATED
+                                </span>
+                                <span th:if="${!g.isEscalated() && g.overdue}" class="badge bg-danger">OVERDUE</span>
+                                <span th:if="${!g.isEscalated() && !g.overdue && g.status.name() != 'RESOLVED'}" class="badge bg-success">ON TIME</span>
+                                <span th:if="${g.status.name() == 'RESOLVED'}" class="badge bg-success">RESOLVED</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(grievances)}">
+                            <td colspan="8" class="text-center py-4 text-muted">No grievances currently recorded in the system.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div class="card p-4">
-        <h4>All Institution Grievances</h4>
-        <table class="table table-hover mt-3">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Dept</th>
-                    <th>Title</th>
-                    <th>Priority</th>
-                    <th>Status</th>
-                    <th>Student</th>
-                    <th>SLA Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="g : ${grievances}">
-                    <td th:text="${g.id}"></td>
-                    <td><span class="badge bg-primary" th:text="${g.department}"></span></td>
-                    <td th:text="${g.title}"></td>
-                    <td><span class="badge bg-dark" th:text="${g.priority}"></span></td>
-                    <td><span class="badge bg-secondary" th:text="${g.status}"></span></td>
-                    <td th:text="${g.submittedBy}"></td>
-                    <td>
-                        <span th:if="${g.overdue}" class="badge bg-danger">OVERDUE</span>
-                        <span th:if="${!g.overdue}" class="badge bg-success">ON TIME</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function applySuperFilter(mode) {
+            const btnAll = document.getElementById('filterAllBtn');
+            const btnEscalated = document.getElementById('filterEscalatedBtn');
+            const rows = document.querySelectorAll('#superGrievanceTable tbody tr');
+
+            if (mode === 'escalated') {
+                btnEscalated.classList.add('active');
+                btnAll.classList.remove('active');
+                rows.forEach(r => {
+                    const isEsc = r.getAttribute('data-escalated') === 'true';
+                    r.style.display = isEsc ? '' : 'none';
+                });
+            } else {
+                btnAll.classList.add('active');
+                btnEscalated.classList.remove('active');
+                rows.forEach(r => r.style.display = '');
+            }
+        }
+
+        function searchSuperTable() {
+            const query = document.getElementById('superSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#superGrievanceTable tbody tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('/api/admin/analytics')
+                .then(response => response.json())
+                .then(data => {
+                    // Update MTTR
+                    document.getElementById('mttrValue').innerText = data.averageMttrHours + " hrs";
+
+                    // Donut Chart - Distribution
+                    const deptLabels = Object.keys(data.distributionByDepartment);
+                    const deptData = Object.values(data.distributionByDepartment);
+                    
+                    new Chart(document.getElementById('deptDonutChart'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: deptLabels,
+                            datasets: [{
+                                data: deptData,
+                                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+
+                    // Bar Chart - SLA Compliance
+                    const slaDepts = Object.keys(data.slaCompliance);
+                    const metData = slaDepts.map(d => data.slaCompliance[d].met);
+                    const breachedData = slaDepts.map(d => data.slaCompliance[d].breached);
+
+                    new Chart(document.getElementById('slaBarChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: slaDepts,
+                            datasets: [
+                                {
+                                    label: 'Met SLA',
+                                    data: metData,
+                                    backgroundColor: '#1cc88a'
+                                },
+                                {
+                                    label: 'Breached SLA',
+                                    data: breachedData,
+                                    backgroundColor: '#e74a3b'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { stacked: true },
+                                y: { stacked: true, beginAtZero: true }
+                            }
+                        }
+                    });
+                })
+                .catch(err => console.error("Could not load analytics chart data:", err));
+        });
+    </script>
 </body>
+
 </html>
